@@ -66,4 +66,29 @@ let stackAfterMoves = moves |>
 let stackTops = stackAfterMoves |> Array.map(fun s -> s |> Stack.pop |> fst) |> System.String
 
 printfn "%s" stackTops
+
+
+let queueArray = [1..stackCount] |>
+                    List.map(fun stackNumber -> [1..stackHeight] |>
+                                                List.map(fun lineNumber -> stackText[coordsToIndex stackNumber lineNumber lineLength]) |>
+                                                List.filter(fun x -> x <> ' ')) |>
+                    Array.ofList
+
+type moveQueueSignature = char list array -> int -> int -> int -> char list array
+let doMoveQueue:moveQueueSignature = fun queues src dest count ->
+    let (valuesToMove, newSrc) = queues[src] |> List.splitAt count
+    let newDest = valuesToMove @ queues[dest]
+    queues |> Array.mapi(fun i queue -> match i with
+                                        | x when x = src -> newSrc
+                                        | x when x = dest -> newDest
+                                        | _ -> queue)
+
     
+let stackAfterMovesQueue = moves |> 
+                            Array.fold (fun queues (count, src, dest) -> doMoveQueue queues (src-1) (dest-1) count
+                            ) queueArray
+
+
+let stackTopsQueue = stackAfterMovesQueue |> Array.map(fun s -> s.Head) |> System.String
+
+printfn "%s" stackTopsQueue
