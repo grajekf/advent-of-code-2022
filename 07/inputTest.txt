@@ -1,0 +1,35 @@
+﻿$ cd /
+$ ls
+dir cvt
+4967 hcqbmwc.gts
+5512 hsbhwb.clj
+dir hvfvt
+dir phwgv
+277125 pwgswq.fld
+42131 qdzr.btl
+dir svw
+144372 vmbnlzgb.wbd
+dir zft
+$ cd cvt
+$ ls
+dir bbgsthsd
+146042 bcqrmp.czf
+dir chhdjtlw
+dir cpcfcc
+dir dch
+dir djb
+dir djfww
+dir drdf
+dir fgbqtjlj
+dir hjsmmj
+243293 hvfvt.qtb
+245795 lrpb
+dir msptbrl
+181756 qlqqmndd.zcb
+18658 rtfzt.tjp
+dir slpc
+$ cd bbgsthsd
+$ ls
+236957 djfww.fcb
+112286 hcqbmwc.gts
+106102 qggjrzts
