@@ -32,3 +32,18 @@ let hundredEightyStrength = signalStrength allRegisterValues 180
 let twoTwentyStrength = signalStrength allRegisterValues 220
 
 printfn "%d" (twentyStrength + sixtyStrength + hundredStrength + hundredFortyStrength + hundredEightyStrength + twoTwentyStrength)
+
+let isLit position spritePosition =
+    abs (position % 40 - spritePosition % 40) <= 1
+
+
+let pixels = allRegisterValues 
+                |> Array.indexed 
+                |> Array.map (fun (index, value) -> if isLit index value then '#' else '.') 
+                |> Array.chunkBySize 40
+
+let pixelString = pixels |> Array.map (fun chars -> chars |> System.String) |> String.concat "\r\n"
+
+printfn "%s" pixelString
+
+
