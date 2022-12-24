@@ -37,4 +37,52 @@ let visibleCount = visibilityMap |> Array.filter(fun x -> x) |> Array.length
 printfn "%d" visibleCount
 
 
+let rec allTails a = 
+    if (a |> Array.length) = 1 then 
+        [[(a |> Array.head)]]
+    else
+        [
+            yield (a |> List.ofArray)
+            yield! a |> Array.tail |> allTails
+        ]
+
+
+let viewDistance height view =
+    let viewCount = view |> List.takeWhile (fun x -> x < height) |> List.length
+    if viewCount < (view |> List.length) then
+        viewCount + 1
+    else
+        viewCount
+
+
+let lookingFromStart map =
+    map |> Array.map (fun row -> row 
+                                |> allTails 
+                                |> List.map (fun l -> match l with
+                                                        | [head] -> 0
+                                                        | head :: tail -> viewDistance head tail)
+                                |> List.toArray)
+
+let lookingFromEnd map =
+    map |> Array.map (fun row -> row 
+                                |> Array.rev
+                                |> allTails 
+                                |> List.map (fun l -> match l with
+                                                        | [head] -> 0
+                                                        | head :: tail -> viewDistance head tail)
+                                |> List.rev
+                                |> List.toArray)
+
+let lookingRightDistance = lookingFromStart map
+let lookingLeftDistance = lookingFromEnd map
+
+let lookingDownDistance = map |> Array.transpose |> lookingFromStart |> Array.transpose
+let lookingUpDistance = map |> Array.transpose |> lookingFromEnd |> Array.transpose
+
+let scenicScores = Array.zip3 (flatten lookingRightDistance)  (flatten lookingLeftDistance) (Array.zip (flatten lookingDownDistance)  (flatten lookingUpDistance))
+                        |> Array.map (fun (r, l, (d, u)) -> r * l * d * u)
+
+let maxScenicScore = scenicScores |> Array.max
+
+printfn "%d" maxScenicScore
 
