@@ -94,3 +94,63 @@ let groupedInspections = inspections
 
 printfn "%A" monkeysAfterSimluations
 printfn "%A" groupedInspections
+
+let allDivisors = monkeys |> Array.map(fun (_, _, _, divisor, _, _) -> divisor)
+
+
+printfn "%A" allDivisors
+
+
+
+let simulateTurnb monkeys index =
+    let (monkeyNumber, items, (a, operation, b), divisibleBy, ifTrue, ifFalse) = Array.get monkeys index
+    
+    let itemChanges = items
+                    |> List.map (fun item ->
+                                    let newWorryLevelModulo = item |> Array.zip allDivisors |> Array.map (fun (d, i) -> (doOperation (a, operation, b) i) % (d))
+
+                                    ((if (Array.get newWorryLevelModulo index) = 0 then ifTrue else ifFalse), newWorryLevelModulo)
+                                )
+
+    let inspections = (index, items.Length)
+                                                                          
+    (
+        monkeys |> Array.map (fun (monkeyNumber, items, (a, operation, b), divisibleBy, ifTrue, ifFalse) ->
+                                (
+                                    monkeyNumber, 
+                                    (if monkeyNumber = index then [] else items @ (getItemsFromChanges itemChanges monkeyNumber)), 
+                                    (a, operation, b), 
+                                    divisibleBy, 
+                                    ifTrue, 
+                                    ifFalse
+                                )
+                            ),
+        inspections
+    )
+
+let simulateRoundb monkeys =
+    monkeys |> Array.fold (fun (monkeys, inspections) (monkeyNumber, _, _, _, _, _) ->
+                                let (newMonkeys, newInspections) = simulateTurnb monkeys monkeyNumber
+                                (newMonkeys, newInspections :: inspections)) (monkeys, [])
+
+let monkeysb = monkeys |> Array.map (fun (monkeyNumber, items, (a, operation, b), divisibleBy, ifTrue, ifFalse) ->
+                                (
+                                    monkeyNumber, 
+                                    items |> List.map (fun i -> allDivisors |> Array.map(fun d -> i % d)), 
+                                    (a, operation, b), 
+                                    divisibleBy, 
+                                    ifTrue, 
+                                    ifFalse
+                                ))
+
+let (monkeysAfterSimluationsb, inspectionsb) = [1..10000] |> List.fold (fun (monkeys, inspections) _ ->
+                                let (newMonkeys, newInspections) = simulateRoundb monkeys
+                                (newMonkeys, inspections @ newInspections)) (monkeysb, [])
+
+let groupedInspectionsb = inspectionsb 
+                        |> List.groupBy (fun (monkeyNumber, _) -> monkeyNumber)
+                        |> List.map (fun (monkeyNumber, monkeyInspections) -> (monkeyNumber, monkeyInspections 
+                                                                                                |> List.sumBy (fun (_, count) -> count)))
+
+printfn "%A" monkeysAfterSimluationsb
+printfn "%A" groupedInspectionsb
