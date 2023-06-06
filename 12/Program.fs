@@ -9,8 +9,6 @@ let columnCount = inputLines[0].Length
 let map = inputLines |> Array.map(fun l -> l |> Seq.map(fun c -> int c - int 'a') |> Array.ofSeq)
 let mapFlat = map |> Array.collect id
 
-//printfn "%A" map
-
 let charToValue char =
     int char - int 'a'
 
@@ -82,3 +80,5 @@ let allWayLengths = allPossibleStartingPositions
 
 let shortestLength = allWayLengths |> Array.min
 printfn "%A" (shortestLength - 2) //Without start and end
+
+printfn "test"
